@@ -1,0 +1,192 @@
+.internships {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.section-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+.internship-form {
+	display: flex;
+	gap: var(--space-2);
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.input {
+	background: var(--bg-elevated);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	color: var(--text-primary);
+	padding: var(--space-2) var(--space-3);
+	font-size: 13px;
+	outline: none;
+	flex: 1;
+}
+
+.input:focus {
+	border-color: var(--accent-dim);
+}
+
+.select {
+	background: var(--bg-elevated);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	color: var(--text-primary);
+	padding: var(--space-2) var(--space-3);
+	font-size: 13px;
+	outline: none;
+	cursor: pointer;
+}
+
+.btn {
+	background: var(--accent);
+	border: none;
+	border-radius: var(--radius-sm);
+	color: white;
+	padding: var(--space-2) var(--space-4);
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.btn:hover {
+	opacity: 0.85;
+}
+
+.btn-ghost {
+	background: none;
+	border: none;
+	color: var(--text-muted);
+	font-size: 13px;
+	cursor: pointer;
+	padding: 0 var(--space-1);
+}
+
+.btn-ghost:hover {
+	color: var(--danger);
+}
+
+.internship-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+
+.internship-item {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	padding: var(--space-3);
+	background: var(--bg-secondary);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	border-left: 3px solid var(--border);
+}
+
+.internship-item.priority-high {
+	border-left-color: var(--danger);
+}
+
+.internship-item.priority-medium {
+	border-left-color: var(--warning);
+}
+
+.internship-item.priority-low {
+	border-left-color: var(--text-muted);
+}
+
+.internship-item.done {
+	opacity: 0.4;
+}
+
+.internship-text {
+	flex: 1;
+	font-size: 13px;
+	color: var(--text-primary);
+}
+
+.badge {
+	font-size: 10px;
+	text-transform: uppercase;
+	padding: 2px var(--space-2);
+	border-radius: var(--radius-sm);
+	letter-spacing: 0.05em;
+}
+
+.badge.high {
+	background: #3d1a1a;
+	color: var(--danger);
+}
+
+.badge.medium {
+	background: #3d2e0f;
+	color: var(--warning);
+}
+
+.badge.low {
+	background: var(--bg-elevated);
+	color: var(--text-muted);
+}
+
+.internship-time {
+	font-size: 11px;
+	color: var(--text-muted);
+}
+
+.internship-done {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+
+.done-label {
+	font-size: 11px;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.internship-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	flex: 1;
+}
+
+.internship-company {
+	font-size: 13px;
+	color: var(--text-primary);
+	font-weight: 500;
+}
+
+.internship-role {
+	font-size: 11px;
+	color: var(--text-secondary);
+}
+
+.internship-date {
+	font-size: 11px;
+	color: var(--text-muted);
+}
+
+.internship-notes {
+	font-size: 11px;
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+.status-offer {
+	border-left-color: var(--success);
+}
+
+.status-interview {
+	border-left-color: var(--accent);
+}
+
+.status-rejected {
+	opacity: 0.4;
+}

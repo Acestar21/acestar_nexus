@@ -16,10 +16,10 @@ export default function Reminders() {
     async function add() {
         if (!text.trim()) return
         const newReminder = await api.createReminder({
-        text,
-        priority,
-        remind_at: remindAt || undefined,
-        done: false,
+            text,
+            priority,
+            remind_at: remindAt || undefined,
+            done: false,
         })
         setReminders(prev => [...prev, newReminder])
         setText('')
