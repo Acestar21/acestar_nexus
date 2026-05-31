@@ -1,0 +1,48 @@
+.widget {
+    width: 300px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    user-select: none;
+}
+
+.widget:hover {
+    border-color: var(--accent-dim);  
+}
+
+.widget-focus {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.widget-focus-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+}
+
+.widget-focus-text {
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.widget-snapshot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.widget-snapshot span {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-sm);
+}
