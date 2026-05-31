@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { api } from '../../lib/api'
 import type { Reminder, Priority } from '../../types/index'
-import './Reminders.css'
+import './reminders.css'
 
 export default function Reminders() {
     const [reminders, setReminders] = useState<Reminder[]>([])

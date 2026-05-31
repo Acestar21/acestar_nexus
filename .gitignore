@@ -25,4 +25,5 @@ Thumbs.db
 *.swp
 .env
 
-nexus.db
+# Database
+*.db
