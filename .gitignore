@@ -5,6 +5,7 @@ __pycache__/
 *.pyo
 .env
 
+
 # Rust / Tauri
 target/
 src-tauri/target/
