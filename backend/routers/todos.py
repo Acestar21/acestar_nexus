@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from database import get_session
 from models import Todo
+from datetime import datetime
 
 router = APIRouter()
 
@@ -12,6 +13,8 @@ def get_to_do(session: Session = Depends(get_session)):
 
 @router.post("/", response_model=Todo)
 def create_to_do(to_do: Todo, session: Session = Depends(get_session)):
+    if isinstance(to_do.remind_at, str):
+        to_do.remind_at = datetime.fromisoformat(to_do.remind_at)
     session.add(to_do)
     session.commit()
     session.refresh(to_do)

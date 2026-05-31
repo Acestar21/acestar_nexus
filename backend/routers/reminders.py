@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from database import get_session
 from models import Reminder
+from datetime import datetime
 
 router = APIRouter()
 
@@ -12,10 +13,12 @@ def get_reminders(session: Session = Depends(get_session)):
 
 @router.post("/", response_model=Reminder)
 def create_reminder(reminder: Reminder, session: Session = Depends(get_session)):
-    session.add(reminder)
-    session.commit()
-    session.refresh(reminder)
-    return reminder
+	if isinstance(reminder.remind_at, str):
+		reminder.remind_at = datetime.fromisoformat(reminder.remind_at)
+	session.add(reminder)
+	session.commit()
+	session.refresh(reminder)
+	return reminder
 
 @router.patch("/{id}", response_model=Reminder)
 def update_reminder(id: int, data: dict, session: Session = Depends(get_session)):

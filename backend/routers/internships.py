@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from database import get_session
 from models import Internship
+from datetime import datetime
 
 router = APIRouter()
 
@@ -12,6 +13,8 @@ def get_internships(session: Session = Depends(get_session)):
 
 @router.post("/", response_model=Internship)
 def create_internship(internship: Internship, session: Session = Depends(get_session)):
+    if isinstance(internship.remind_at, str):
+        internship.remind_at = datetime.fromisoformat(internship.remind_at)
     session.add(internship)
     session.commit()
     session.refresh(internship)
