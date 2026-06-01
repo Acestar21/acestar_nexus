@@ -24,6 +24,7 @@ export interface Goal {
     id?: number;
     name: string;
     target: number;
+    current: number
     start_date: string;
     end_date: string;
     unit: string;
@@ -45,4 +46,15 @@ export interface Todo {
     remind_at?: string;
     done: boolean;
     created_at?: string;
+}
+
+export interface GoalProgress {
+	goal: Goal
+	current: number
+	weeks_elapsed: number
+	weeks_remaining: number
+	weekly_target: number
+	expected_by_now: number
+	on_track: boolean
+    deadline_close: boolean
 }

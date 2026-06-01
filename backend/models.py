@@ -14,12 +14,13 @@ class Internship(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Goal(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
-    target: int
-    start_date: date
-    end_date: date
-    unit: str = "problems"
+	id: Optional[int] = Field(default=None, primary_key=True)
+	name: str
+	target: int
+	current: int = 0
+	start_date: date
+	end_date: date
+	unit: str = "problems"
 
 class Reminder(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

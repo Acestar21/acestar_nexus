@@ -1,4 +1,4 @@
-import type { Internship, Goal, Reminder, Todo } from "../types/index";
+import type { Internship, Goal, GoalProgress, Reminder, Todo } from "../types/index";
 
 const BASE_URL = "http://localhost:8000";
 
@@ -18,6 +18,7 @@ export const api = {
     deleteInternship: (id: number) => request<{ ok: boolean }>(`/internships/${id}`, { method: "DELETE" }),
 
     getGoals: () => request<Goal[]>("/goals/"),
+    getGoalProgress: (id: number) => request<GoalProgress>(`/goals/${id}/progress`),
     createGoal: (data: Omit<Goal, "id">) => request<Goal>("/goals/", { method: "POST", body: JSON.stringify(data) }),
     updateGoal: (id: number, data: Partial<Goal>) => request<Goal>(`/goals/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
     deleteGoal: (id: number) => request<{ ok: boolean }>(`/goals/${id}`, { method: "DELETE" }),

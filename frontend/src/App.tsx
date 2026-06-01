@@ -3,9 +3,10 @@ import Widget from './components/widget/Widget'
 import Reminders from './components/dashboard/Reminders'
 import Todos from './components/dashboard/Todo'
 import Internships from './components/dashboard/Internship'
+import Goals from './components/dashboard/Goals'
 import './App.css'
 
-type View = 'reminders' | 'todos' | 'internships'
+type View = 'reminders' | 'todos' | 'internships' | 'goals'
 
 export default function App() {
 	const [expanded, setExpanded] = useState(false)
@@ -19,10 +20,12 @@ export default function App() {
 					<button className={`nav-btn ${view === 'reminders' ? 'active' : ''}`} onClick={() => setView('reminders')}>Reminders</button>
 					<button className={`nav-btn ${view === 'todos' ? 'active' : ''}`} onClick={() => setView('todos')}>Todos</button>
 					<button className={`nav-btn ${view === 'internships' ? 'active' : ''}`} onClick={() => setView('internships')}>Internships</button>
+					<button className={`nav-btn ${view === 'goals' ? 'active' : ''}`} onClick={() => setView('goals')}>Goals</button>
 				</div>
 				{view === 'reminders' && <Reminders />}
 				{view === 'todos' && <Todos />}
 				{view === 'internships' && <Internships />}
+				{view === 'goals' && <Goals />}
 			</div>
 		)
 	}
