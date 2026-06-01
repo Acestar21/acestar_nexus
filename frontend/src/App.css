@@ -1,9 +1,10 @@
 .app-widget {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: transparent;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	background: transparent;
+	padding: 0;
+	margin: 0;
 }
 
 .dashboard {
