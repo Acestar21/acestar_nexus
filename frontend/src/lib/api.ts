@@ -1,4 +1,4 @@
-import type { Internship, Goal, GoalProgress, Reminder, Todo } from "../types/index";
+import type { Internship, Goal, GoalProgress, Reminder, Todo , Focus} from "../types/index";
 
 const BASE_URL = "http://localhost:8000";
 
@@ -12,6 +12,8 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
+    getFocus: () => request<Focus>('/focus/'),
+
     getInternships: () => request<Internship[]>("/internships/"),
     createInternship: (data: Omit<Internship, "id" | "created_at">) => request<Internship>("/internships/", { method: "POST", body: JSON.stringify(data) }),
     updateInternship: (id: number, data: Partial<Internship>) => request<Internship>(`/internships/${id}`, { method: "PATCH", body: JSON.stringify(data) }),

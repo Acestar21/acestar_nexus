@@ -58,3 +58,10 @@ export interface GoalProgress {
 	on_track: boolean
     deadline_close: boolean
 }
+
+export interface Focus {
+	type: string
+	priority: string
+	message: string
+	id: number | null
+}

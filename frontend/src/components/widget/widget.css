@@ -46,3 +46,14 @@
     padding: 2px var(--space-2);
     border-radius: var(--radius-sm);
 }
+.widget-focus-text.priority-high {
+	color: var(--danger);
+}
+
+.widget-focus-text.priority-medium {
+	color: var(--warning);
+}
+
+.widget-focus-text.priority-low {
+	color: var(--text-primary);
+}
