@@ -17,8 +17,9 @@ export default function Widget({ onExpand }: Props) {
 				</p>
 			</div>
 			<div className="widget-snapshot">
-				<span>LC: —</span>
-				<span>Exercise: —</span>
+				<span>LC: {loading ? '—' : `${snapshot.lc_today} today · ${snapshot.lc_total} total`}</span>
+				<span>GitHub: {loading ? '—' : `${snapshot.commits_today} commits`}</span>
+				<span>Exercise: {loading ? '—' : snapshot.worked_out_today ? '✓ done' : '✗ not yet'}</span>
 				<span>Internships: {loading ? '—' : snapshot.internships}</span>
 				<span>Reminders: {loading ? '—' : snapshot.reminders}</span>
 				<span>Todos: {loading ? '—' : snapshot.todos}</span>

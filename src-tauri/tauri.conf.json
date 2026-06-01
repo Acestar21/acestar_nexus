@@ -19,7 +19,7 @@
           "height": 160,
           "resizable": false,
           "fullscreen": false,
-          "alwaysOnTop": true,
+          "alwaysOnTop": false,
           "decorations": false,
           "transparent": true,
           "x": 20,

@@ -2,3 +2,7 @@ fastapi
 uvicorn
 sqlmodel
 python-dotenv
+mcp[cli]
+pydantic-settings
+pydantic
+httpx

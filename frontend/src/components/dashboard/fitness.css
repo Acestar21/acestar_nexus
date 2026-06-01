@@ -1,0 +1,37 @@
+.fitness {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.fitness-log {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+	padding: var(--space-4);
+	background: var(--bg-secondary);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+
+.fitness-date {
+	font-size: 13px;
+	color: var(--text-secondary);
+}
+
+.fitness-form {
+	display: flex;
+	gap: var(--space-2);
+	flex-wrap: wrap;
+}
+
+.fitness-actions {
+	display: flex;
+	gap: var(--space-3);
+	align-items: center;
+}
+
+.fitness-success {
+	font-size: 12px;
+	color: var(--success);
+}

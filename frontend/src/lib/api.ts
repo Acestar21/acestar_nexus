@@ -35,5 +35,38 @@ export const api = {
     updateTodo: (id: number, data: Partial<Todo>) => request<Todo>(`/todos/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
     deleteTodo: (id: number) => request<{ ok: boolean }>(`/todos/${id}`, { method: "DELETE" }),
 
+    logFitness: (data: { date: string, completed: boolean, duration_minutes?: number, notes?: string }) => {
+        const params = new URLSearchParams()
+        params.append('date', data.date)
+        params.append('completed', String(data.completed))
+        if (data.duration_minutes) params.append('duration_minutes', String(data.duration_minutes))
+        if (data.notes) params.append('notes', data.notes)
+        return request<{ status: string, date: string }>(`/metrics/fitness/log?${params.toString()}`, {
+            method: 'POST',
+        })
+    },
+
+    getMetrics: () => request<{
+        leetcode: {
+            activity: {
+                problem_solved_today: number
+                total_problem_solved: number
+                current_streak: number
+            }
+        } | null,
+        github: {
+            activity: {
+                commits_today: number
+                commits_this_week: number
+                current_streak: number
+            }
+        } | null,
+        fitness: {
+            worked_out_today: boolean
+            current_streak: number
+            total_workouts_this_week: number
+        } | null
+    }>('/metrics/'),
+
     health: () => request<{ status: string }>("/health"),
 };

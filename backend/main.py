@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from database import init_db
-from routers import internships, goals, reminders, todos, focus
+from routers import internships, goals, reminders, todos, focus, metrics
 
 load_dotenv()
 
@@ -27,6 +27,7 @@ app.include_router(goals.router, prefix="/goals", tags=["goals"])
 app.include_router(reminders.router, prefix="/reminders", tags=["reminders"])
 app.include_router(todos.router, prefix="/todos", tags=["todos"])
 app.include_router(focus.router, prefix="/focus", tags=["focus"])
+app.include_router(metrics.router, prefix="/metrics", tags=["metrics"])
 
 @app.get("/health")
 def health():
