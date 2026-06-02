@@ -28,3 +28,6 @@ Thumbs.db
 # Database
 *.db
 data/
+
+start.sh
+start.bat
