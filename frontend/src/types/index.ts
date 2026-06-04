@@ -28,6 +28,7 @@ export interface Goal {
     start_date: string;
     end_date: string;
     unit: string;
+    priority: Priority;
 }
 
 export interface Reminder {

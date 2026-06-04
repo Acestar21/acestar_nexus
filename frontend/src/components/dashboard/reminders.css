@@ -76,6 +76,41 @@
 	gap: var(--space-2);
 }
 
+.btn-alarm {
+	font-size: 11px;
+	padding: 4px 8px;
+	border: 1px solid var(--border);
+	background: var(--bg-elevated);
+	cursor: pointer;
+	font-family: inherit;
+}
+
+.btn-alarm.on {
+	border-color: var(--accent);
+	color: var(--accent);
+}
+
+.btn-alarm.off {
+	color: var(--text-muted);
+}
+
+.alarm-toggle-wrap {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.alarm-toggle-hint {
+	font-size: 10px;
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.item-date {
+	font-size: 11px;
+	color: var(--text-muted);
+}
+
 .reminder-item {
 	display: flex;
 	align-items: center;

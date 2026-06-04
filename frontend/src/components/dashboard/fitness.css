@@ -1,3 +1,22 @@
+.fitness-muted {
+	color: var(--text-muted);
+	font-size: 12px;
+}
+
+.fitness-logged-banner {
+	padding: 12px;
+	border: 1px solid var(--border);
+	background: var(--bg-elevated);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.fitness-logged-banner p {
+	color: var(--success);
+	font-size: 13px;
+}
+
 .fitness {
 	display: flex;
 	flex-direction: column;

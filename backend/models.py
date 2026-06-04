@@ -21,6 +21,7 @@ class Goal(SQLModel, table=True):
 	start_date: date
 	end_date: date
 	unit: str = "problems"
+	priority: str = "medium"
 
 class Reminder(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

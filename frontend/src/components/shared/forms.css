@@ -1,0 +1,34 @@
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 140px;
+	flex: 1;
+}
+
+.field--grow {
+	flex: 2;
+	min-width: 200px;
+}
+
+.field-label {
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+}
+
+.field-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: flex-end;
+}
+
+.form-panel {
+	padding: 14px;
+	background: var(--bg-secondary);
+	border: 1px solid var(--border);
+	margin-bottom: 16px;
+}

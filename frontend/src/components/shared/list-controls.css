@@ -1,0 +1,20 @@
+.list-controls {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+
+.list-controls-label {
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+}
+
+.list-controls-select {
+	width: auto;
+	min-width: 200px;
+	flex: none;
+}

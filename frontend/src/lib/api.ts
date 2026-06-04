@@ -11,6 +11,60 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     return res.json();
 }
 
+type GithubActivity = {
+    commits_today: number
+    commits_this_week: number
+    current_streak: number
+}
+
+type MetricsResponse = {
+    leetcode: {
+        activity: {
+            problem_solved_today: number
+            total_problem_solved: number
+            current_streak: number
+        }
+    } | null
+    github: { activity: GithubActivity } | GithubActivity | string | null
+    fitness: {
+        worked_out_today: boolean
+        current_streak: number
+        total_workouts_this_week: number
+    } | null
+}
+
+function normalizeGithubMetrics(
+    github: MetricsResponse['github'],
+): { activity: GithubActivity } | null {
+    if (!github) return null
+    let parsed = github
+    if (typeof github === 'string') {
+        try {
+            parsed = JSON.parse(github)
+        } catch {
+            return null
+        }
+    }
+    if (parsed && typeof parsed === 'object') {
+        if ('activity' in parsed) return parsed as { activity: GithubActivity }
+        if (
+            'commits_today' in parsed &&
+            'commits_this_week' in parsed &&
+            'current_streak' in parsed
+        ) {
+            return { activity: parsed as GithubActivity }
+        }
+    }
+    return null
+}
+
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+const METRICS_RETRY_DELAY_MS = 800
+const METRICS_MAX_ATTEMPTS = 2
+
 export const api = {
     getFocus: () => request<Focus>('/focus/'),
 
@@ -46,27 +100,22 @@ export const api = {
         })
     },
 
-    getMetrics: () => request<{
-        leetcode: {
-            activity: {
-                problem_solved_today: number
-                total_problem_solved: number
-                current_streak: number
+    getMetrics: async () => {
+        let last: MetricsResponse | null = null
+        for (let attempt = 0; attempt < METRICS_MAX_ATTEMPTS; attempt += 1) {
+            const data = await request<MetricsResponse>('/metrics/')
+            last = data
+            const github = normalizeGithubMetrics(data.github)
+            if (github || attempt === METRICS_MAX_ATTEMPTS - 1) {
+                return { ...data, github }
             }
-        } | null,
-        github: {
-            activity: {
-                commits_today: number
-                commits_this_week: number
-                current_streak: number
-            }
-        } | null,
-        fitness: {
-            worked_out_today: boolean
-            current_streak: number
-            total_workouts_this_week: number
-        } | null
-    }>('/metrics/'),
+            await sleep(METRICS_RETRY_DELAY_MS)
+        }
+        return {
+            ...last,
+            github: normalizeGithubMetrics(last?.github ?? null),
+        } as MetricsResponse
+    },
 
     health: () => request<{ status: string }>("/health"),
 };

@@ -1,14 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from '../../lib/api'
+import '../shared/forms.css'
 import './fitness.css'
 
 export default function Fitness() {
 	const [duration, setDuration] = useState('')
 	const [notes, setNotes] = useState('')
-	const [logged, setLogged] = useState(false)
+	const [loggedToday, setLoggedToday] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const [checking, setChecking] = useState(true)
 
 	const today = new Date().toISOString().split('T')[0]
+
+	useEffect(() => {
+		api.getMetrics()
+			.then(m => setLoggedToday(m.fitness?.worked_out_today ?? false))
+			.finally(() => setChecking(false))
+	}, [])
 
 	async function logToday(completed: boolean) {
 		setLoading(true)
@@ -16,10 +24,10 @@ export default function Fitness() {
 			await api.logFitness({
 				date: today,
 				completed,
-				duration_minutes: duration ? parseInt(duration) : undefined,
+				duration_minutes: duration ? parseInt(duration, 10) : undefined,
 				notes: notes || undefined,
 			})
-			setLogged(true)
+			setLoggedToday(completed)
 			setDuration('')
 			setNotes('')
 		} catch (e) {
@@ -29,48 +37,80 @@ export default function Fitness() {
 		}
 	}
 
+	async function clearLog() {
+		await logToday(false)
+	}
+
 	return (
 		<div className="fitness">
 			<h2 className="section-title">Fitness</h2>
 
-			<div className="fitness-log">
+			<div className="fitness-log form-panel">
 				<p className="fitness-date">Today — {today}</p>
 
-				<div className="fitness-form">
-					<input
-						className="input"
-						type="number"
-						placeholder="Duration (minutes)"
-						value={duration}
-						onChange={e => setDuration(e.target.value)}
-					/>
-					<input
-						className="input"
-						placeholder="Notes (optional)"
-						value={notes}
-						onChange={e => setNotes(e.target.value)}
-					/>
-				</div>
+				{checking ? (
+					<p className="fitness-muted">Checking today&apos;s log…</p>
+				) : loggedToday ? (
+					<div className="fitness-logged-banner">
+						<p>
+							Already logged today — delete to re-log
+						</p>
+						<button
+							type="button"
+							className="btn-ghost"
+							onClick={clearLog}
+							disabled={loading}
+						>
+							Clear today&apos;s log
+						</button>
+					</div>
+				) : (
+					<>
+						<div className="field-row">
+							<div className="field">
+								<label
+									className="field-label"
+									htmlFor="fitness-duration"
+								>
+									Duration (minutes)
+								</label>
+								<input
+									id="fitness-duration"
+									className="input"
+									type="number"
+									placeholder="45"
+									value={duration}
+									onChange={e => setDuration(e.target.value)}
+								/>
+							</div>
+							<div className="field field--grow">
+								<label
+									className="field-label"
+									htmlFor="fitness-notes"
+								>
+									Workout notes
+								</label>
+								<input
+									id="fitness-notes"
+									className="input"
+									placeholder="Optional notes about today's session"
+									value={notes}
+									onChange={e => setNotes(e.target.value)}
+								/>
+							</div>
+						</div>
 
-				<div className="fitness-actions">
-					<button
-						className="btn"
-						onClick={() => logToday(true)}
-						disabled={loading}
-					>
-						{logged ? '✓ Logged' : 'Log Workout'}
-					</button>
-					<button
-						className="btn-ghost"
-						onClick={() => logToday(false)}
-						disabled={loading}
-					>
-						Skip today
-					</button>
-				</div>
-
-				{logged && (
-					<p className="fitness-success">Workout logged for today.</p>
+						<div className="fitness-actions">
+							<button
+								type="button"
+								className="btn"
+								onClick={() => logToday(true)}
+								disabled={loading}
+							>
+								Log workout
+							</button>
+						</div>
+					</>
 				)}
 			</div>
 		</div>

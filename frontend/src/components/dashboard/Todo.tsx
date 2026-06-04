@@ -1,99 +1,146 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { api } from '../../lib/api'
 import type { Priority, Todo } from '../../types/index'
+import { formatDateAdded } from '../../utils/dates'
+import { sortByMode, type SortMode } from '../../utils/sort'
+import { readCheckedIds, toggleChecked } from '../../utils/bucketList'
+import ListControls from '../shared/ListControls'
+import '../shared/forms.css'
 import './todo.css'
 
 export default function Todos() {
-    const [todos, setTodos] = useState<Todo[]>([])
-    const [text, setText] = useState('')
-    const [priority, setPriority] = useState<Priority>('medium')
-    const [remindAt, setRemindAt] = useState('')
+	const [todos, setTodos] = useState<Todo[]>([])
+	const [text, setText] = useState('')
+	const [priority, setPriority] = useState<Priority>('medium')
+	const [sort, setSort] = useState<SortMode>('priority')
+	const [checked, setChecked] = useState<Set<number>>(() => readCheckedIds())
 
-    useEffect(() => {
-        api.getTodos().then(setTodos)
-    }, [])
+	useEffect(() => {
+		api.getTodos().then(setTodos)
+	}, [])
 
-    async function add() {
-        if (!text.trim()) return
-        const newTodo = await api.createTodo({
-        text,
-        priority,
-        remind_at: remindAt || undefined,
-        done: false,
-        })
-        setTodos(prev => [...prev, newTodo])
-        setText('')
-        setPriority('medium')
-        setRemindAt('')
-    }
+	const sorted = useMemo(() => sortByMode(todos, sort), [todos, sort])
 
-    async function toggle(t: Todo) {
-        const updated = await api.updateTodo(t.id!, { done: !t.done })
-        setTodos(prev => prev.map(x => x.id === t.id ? updated : x))
-    }
+	async function add() {
+		if (!text.trim()) return
+		const newTodo = await api.createTodo({
+			text,
+			priority,
+			done: false,
+		})
+		setTodos(prev => [...prev, newTodo])
+		setText('')
+		setPriority('medium')
+	}
 
-    async function remove(id: number) {
-        await api.deleteTodo(id)
-        setTodos(prev => prev.filter(x => x.id !== id))
-    }
+	function handleVisualCheck(id: number) {
+		setChecked(toggleChecked(id))
+	}
 
-    const pending = todos.filter(t => !t.done)
-    const done = todos.filter(t => t.done)
+	async function updatePriority(t: Todo, newPriority: Priority) {
+		const updated = await api.updateTodo(t.id!, { priority: newPriority })
+		setTodos(prev => prev.map(x => (x.id === t.id ? updated : x)))
+	}
 
-    return (
-        <div className="todos">
-        <h2 className="section-title">To-Do's</h2>
+	async function remove(id: number) {
+		await api.deleteTodo(id)
+		setTodos(prev => prev.filter(x => x.id !== id))
+		const next = new Set(checked)
+		next.delete(id)
+		setChecked(next)
+	}
 
-        <div className="todo-form">
-            <input
-            className="input"
-            placeholder="Add a todo..."
-            value={text}
-            onChange={e => setText(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && add()}
-            />
-            <select
-            className="select"
-            value={priority}
-            onChange={e => setPriority(e.target.value as Priority)}
-            >
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-            </select>
-            <input
-            className="input"
-            type="datetime-local"
-            value={remindAt}
-            onChange={e => setRemindAt(e.target.value)}
-            />
-            <button className="btn" onClick={add}>Add</button>
-        </div>
+	return (
+		<div className="todos">
+			<h2 className="section-title">Bucket list</h2>
+			<p className="section-desc">
+				Check items off visually — no alarms or strict completion tracking.
+			</p>
 
-        <div className="todo-list">
-            {pending.map(t => (
-                <div key={t.id} className={`todo-item priority-${t.priority}`}>
-                    <input type="checkbox" checked={false} onChange={() => toggle(t)} />
-                    <span className="todo-text">{t.text}</span>
-                    <span className={`badge ${t.priority}`}>{t.priority}</span>
-                    {t.remind_at && <span className="todo-time">{new Date(t.remind_at).toLocaleString()}</span>}
-                    <button className="btn-ghost" onClick={() => remove(t.id!)}>✕</button>
-                </div>
-            ))}
-        </div>
+			<div className="form-panel">
+				<div className="field-row">
+					<div className="field field--grow">
+						<label className="field-label" htmlFor="todo-text">
+							Task description
+						</label>
+						<input
+							id="todo-text"
+							className="input"
+							placeholder="Something you want to do someday"
+							value={text}
+							onChange={e => setText(e.target.value)}
+							onKeyDown={e => e.key === 'Enter' && add()}
+						/>
+					</div>
+					<div className="field">
+						<label className="field-label" htmlFor="todo-priority">
+							Priority
+						</label>
+						<select
+							id="todo-priority"
+							className="select"
+							value={priority}
+							onChange={e =>
+								setPriority(e.target.value as Priority)
+							}
+						>
+							<option value="high">High</option>
+							<option value="medium">Medium</option>
+							<option value="low">Low</option>
+						</select>
+					</div>
+					<button type="button" className="btn" onClick={add}>
+						Add to bucket
+					</button>
+				</div>
+			</div>
 
-        {done.length > 0 && (
-            <div className="todo-done">
-            <p className="done-label">Completed ({done.length})</p>
-                {done.map(t => (
-                    <div key={t.id} className="todo-item done">
-                        <input type="checkbox" checked={true} onChange={() => toggle(t)} />
-                        <span className="todo-text">{t.text}</span>
-                        <button className="btn-ghost" onClick={() => remove(t.id!)}>✕</button>
-                    </div>
-                ))}
-            </div>
-        )}
-        </div>
-    )
+			<ListControls sort={sort} onSortChange={setSort} />
+
+			<div className="todo-list">
+				{sorted.map(t => {
+					const isChecked = t.id != null && checked.has(t.id)
+					return (
+						<div
+							key={t.id}
+							className={`todo-item priority-${t.priority} ${isChecked ? 'checked' : ''}`}
+						>
+							<input
+								type="checkbox"
+								checked={isChecked}
+								onChange={() => t.id && handleVisualCheck(t.id)}
+								aria-label={`Mark "${t.text}" visually complete`}
+							/>
+							<span className="todo-text">{t.text}</span>
+							<select
+								className="select select--inline"
+								value={t.priority}
+								onChange={e =>
+									updatePriority(t, e.target.value as Priority)
+								}
+								aria-label="Change priority"
+							>
+								<option value="high">High</option>
+								<option value="medium">Medium</option>
+								<option value="low">Low</option>
+							</select>
+							<span className={`badge ${t.priority}`}>
+								{t.priority}
+							</span>
+							<span className="item-date">
+								Added {formatDateAdded(t.created_at)}
+							</span>
+							<button
+								type="button"
+								className="btn-ghost"
+								onClick={() => remove(t.id!)}
+							>
+								Delete
+							</button>
+						</div>
+					)
+				})}
+			</div>
+		</div>
+	)
 }
