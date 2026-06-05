@@ -10,6 +10,7 @@ import Todos from './components/dashboard/Todo'
 import Internships from './components/dashboard/Internship'
 import Goals from './components/dashboard/Goals'
 import Fitness from './components/dashboard/Fitness'
+import { useNotifications } from './hooks/useNotifications'
 import './components/layout/layout.css'
 import './App.css'
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
@@ -18,6 +19,7 @@ const WIDGET_SIZE = { width: 520, height: 200 }
 const DASHBOARD_SIZE = { width: 1280, height: 800 }
 
 export default function App() {
+	useNotifications()
 	const [expanded, setExpanded] = useState(false)
 	const [view, setView] = useState<NavView>('overview')
 	const [selectedId, setSelectedId] = useState<number | null>(null)

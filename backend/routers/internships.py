@@ -28,6 +28,10 @@ def update_internship(id: int, data: dict, session: Session = Depends(get_sessio
     if not internship:
         raise HTTPException(status_code=404, detail="Not found")
     for key, value in data.items():
+        if key == "followup_at" and isinstance(value, str):
+            value = datetime.fromisoformat(value) if value else None
+        if key == "applied_at" and isinstance(value, str):
+            value = date.fromisoformat(value) if value else None
         setattr(internship, key, value)
     session.add(internship)
     session.commit()

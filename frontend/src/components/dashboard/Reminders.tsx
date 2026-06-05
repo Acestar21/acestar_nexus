@@ -3,11 +3,7 @@ import { api } from '../../lib/api'
 import type { Reminder, Priority } from '../../types/index'
 import { todayDateTimeLocalString, formatDateAdded } from '../../utils/dates'
 import { sortByMode, type SortMode } from '../../utils/sort'
-import {
-	hasAlarm,
-	popAlarmBackup,
-	saveAlarmBackup,
-} from '../../utils/reminderAlarm'
+import { isAlarmEnabled, setAlarmEnabled } from '../../utils/reminderAlarm'
 import ListControls from '../shared/ListControls'
 import '../shared/forms.css'
 import './reminders.css'
@@ -59,20 +55,10 @@ export default function Reminders() {
 	}
 
 	async function toggleAlarm(r: Reminder) {
-		if (hasAlarm(r.remind_at)) {
-			saveAlarmBackup(r.id!, r.remind_at!)
-			const updated = await api.updateReminder(r.id!, {
-				remind_at: undefined,
-			})
-			setReminders(prev => prev.map(x => (x.id === r.id ? updated : x)))
-		} else {
-			const restored =
-				popAlarmBackup(r.id!) ?? todayDateTimeLocalString()
-			const updated = await api.updateReminder(r.id!, {
-				remind_at: restored,
-			})
-			setReminders(prev => prev.map(x => (x.id === r.id ? updated : x)))
-		}
+		if (!r.id) return
+		const enabled = isAlarmEnabled(r.id, r.remind_at)
+		setAlarmEnabled(r.id, !enabled)
+		setReminders(prev => [...prev])
 	}
 
 	async function remove(id: number) {
@@ -164,18 +150,18 @@ export default function Reminders() {
 						<div className="alarm-toggle-wrap">
 							<button
 								type="button"
-								className={`btn-alarm ${hasAlarm(r.remind_at) ? 'on' : 'off'}`}
+								className={`btn-alarm ${isAlarmEnabled(r.id, r.remind_at) ? 'on' : 'off'}`}
 								onClick={() => toggleAlarm(r)}
 								title={
-									hasAlarm(r.remind_at)
+									isAlarmEnabled(r.id, r.remind_at)
 										? 'Will notify + shows on widget'
 										: 'Widget only, no notification'
 								}
 							>
-								{hasAlarm(r.remind_at) ? '🔔' : '🔕'}
+								{isAlarmEnabled(r.id, r.remind_at) ? '🔔' : '🔕'}
 							</button>
 							<span className="alarm-toggle-hint">
-								{hasAlarm(r.remind_at)
+								{isAlarmEnabled(r.id, r.remind_at)
 									? 'Notify + widget'
 									: 'Widget only'}
 							</span>

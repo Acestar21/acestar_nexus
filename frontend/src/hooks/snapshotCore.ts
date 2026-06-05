@@ -95,33 +95,17 @@ export function resolveActiveContext(
 			return { title: t.text, subtitle: 'Bucket list', priority: t.priority }
 		}
 	}
-
-	const active = internships.find(
-		i => !['rejected', 'withdrawn'].includes(i.status),
-	)
-	if (active) {
-		return {
-			title: active.company,
-			subtitle: active.role || 'Active application',
-			priority: active.priority,
-		}
-	}
-
 	if (focus.type !== 'none') {
 		const subtitle =
-			focus.type === 'internship'
-				? 'Internship'
-				: focus.type === 'reminder'
-					? 'Reminder'
-					: focus.type === 'todo'
-						? 'Bucket list'
-						: 'Nexus'
+			focus.type === 'internship' ? 'Internship'
+			: focus.type === 'reminder' ? 'Reminder'
+			: focus.type === 'todo' ? 'Bucket list'
+			: 'Nexus'
 		const title = focus.message.includes('—')
 			? focus.message.split('—')[0].trim()
 			: focus.message
 		return { title, subtitle, priority: focus.priority }
 	}
-
 	return {
 		title: 'Nothing active',
 		subtitle: 'Nexus Core',
@@ -140,14 +124,6 @@ export function resolveNeededAction(
 	}
 	if (focus.type !== 'none' && focus.message !== 'Nothing urgent right now') {
 		return focus.message
-	}
-	const followUp = internships.find(
-		i =>
-			i.followup_at &&
-			!['rejected', 'withdrawn', 'offer'].includes(i.status),
-	)
-	if (followUp) {
-		return `Follow up with ${followUp.company}: ${formatStatus(followUp.status)}`
 	}
 	return 'All caught up for today'
 }

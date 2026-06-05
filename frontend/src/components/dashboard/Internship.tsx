@@ -55,6 +55,14 @@ function resolveAppliedDate(i: Internship): string | undefined {
 	return i.created_at || i.applied_at
 }
 
+function toDateTimeLocal(iso?: string): string {
+	if (!iso) return ''
+	const d = new Date(iso)
+	if (Number.isNaN(d.getTime())) return iso
+	const pad = (n: number) => String(n).padStart(2, '0')
+	return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 export default function Internships({
 	mode = 'manage',
 	selectedId,
@@ -157,6 +165,15 @@ export default function Internships({
 	) {
 		const updated = await api.updateInternship(internship.id!, {
 			status: newStatus,
+		})
+		setInternships(prev =>
+			prev.map(x => (x.id === internship.id ? updated : x)),
+		)
+	}
+
+	async function updateFollowup(internship: Internship, value: string) {
+		const updated = await api.updateInternship(internship.id!, {
+			followup_at: value || undefined,
 		})
 		setInternships(prev =>
 			prev.map(x => (x.id === internship.id ? updated : x)),
@@ -318,6 +335,13 @@ export default function Internships({
 								<option value="rejected">Rejected</option>
 								<option value="withdrawn">Withdrawn</option>
 							</select>
+							<input
+								type="datetime-local"
+								className="input input--inline"
+								value={toDateTimeLocal(i.followup_at)}
+								onChange={e => updateFollowup(i, e.target.value)}
+								aria-label="Follow-up"
+							/>
 							<button
 								type="button"
 								className="btn-ghost"
@@ -533,7 +557,14 @@ export default function Internships({
 									</span>
 								</td>
 								<td className="last-action">
-									{formatDateAdded(i.followup_at)}
+									<input
+										type="datetime-local"
+										className="input input--inline"
+										value={toDateTimeLocal(i.followup_at)}
+										onChange={e => updateFollowup(i, e.target.value)}
+										onClick={e => e.stopPropagation()}
+										aria-label="Follow-up"
+									/>
 								</td>
 								<td className="last-action">
 									{formatDateAdded(resolveAppliedDate(i))}
