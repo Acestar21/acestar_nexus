@@ -74,7 +74,7 @@ acestar_nexus/
 ![Dashboard](docs/dashboard.png)
 
 ### Goals
-![Goals](docs/goal.png)
+![Goals](docs/goals.png)
 
 ### Internship
 ![Internship](docs/internship.png)
