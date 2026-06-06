@@ -23,14 +23,11 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
-.env
+
 
 # Database
 *.db
 data/
-
-start.sh
-start.bat
 
 dist/
 build/
