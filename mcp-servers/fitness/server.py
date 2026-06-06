@@ -17,8 +17,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-FITNESS_LOG_PATH = PROJECT_ROOT / os.getenv("FITNESS_LOG_PATH", "data/fitness.json")
+
+DATA_DIR = Path(os.environ.get('ACESTAR_DATA_DIR', Path.home() / '.acestar_nexus'))
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+FITNESS_LOG_PATH = DATA_DIR / 'fitness.json'
 
 mcp = FastMCP("fitness")
 

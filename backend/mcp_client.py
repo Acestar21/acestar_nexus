@@ -3,19 +3,43 @@ import json
 import logging
 from pathlib import Path
 from typing import Any
-
+import sys
+from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 logger = logging.getLogger(__name__)
 
-SERVERS_DIR = Path(__file__).parent.parent / "mcp-servers"
+if getattr(sys, "frozen", False):
+    BASE_DIR = Path(sys.executable).parent
+    PACKAGED = True
+else:
+    BASE_DIR = Path(__file__).parent.parent
+    PACKAGED = False
 
-def get_server_params(server_name: str) ->StdioServerParameters:
-    server_path = SERVERS_DIR / server_name / "server.py"
+
+def get_server_params(server_name: str) -> StdioServerParameters:
+    if PACKAGED:
+        provider_exe = BASE_DIR / f"{server_name}-provider.exe"
+
+        if not provider_exe.exists():
+            raise FileNotFoundError(
+                f"{server_name} provider executable not found: {provider_exe}"
+            )
+
+        return StdioServerParameters(
+            command=str(provider_exe),
+            args=[],
+        )
+
+    server_path = BASE_DIR / "mcp-servers" / server_name / "server.py"
+
     if not server_path.exists():
-        raise FileNotFoundError(f"""GitHub provider unavailable.\n
-                                    Remaining providers still operational.""")
+        raise FileNotFoundError(
+            f"{server_name} provider unavailable.\n"
+            "Remaining providers still operational."
+        )
+
     return StdioServerParameters(
         command="python",
         args=[str(server_path)],

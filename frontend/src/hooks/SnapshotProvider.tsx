@@ -110,8 +110,14 @@ export function SnapshotProvider({ children }: { children: ReactNode }) {
 	}, [])
 
 	useEffect(() => {
-		fetchSnapshot()
-		const interval = setInterval(fetchSnapshot, FETCH_INTERVAL_MS)
+		const run = async () => {
+			await fetchSnapshot()
+		}
+
+		run()
+
+		const interval = setInterval(run, FETCH_INTERVAL_MS)
+
 		return () => clearInterval(interval)
 	}, [fetchSnapshot])
 

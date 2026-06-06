@@ -1,10 +1,13 @@
-import os
+from pathlib import Path
 from sqlmodel import SQLModel, create_engine, Session
 
-DB_PATH = os.path.join(
-    os.path.dirname(__file__), "..", "data","nexus.db"
-)
+APP_DIR = Path.home() / ".acestar_nexus"
+APP_DIR.mkdir(exist_ok=True)
+
+DB_PATH = APP_DIR / "nexus.db"
+
 DATABASE_URL = f"sqlite:///{DB_PATH}"
+
 
 engine = create_engine(DATABASE_URL, echo=False)
 

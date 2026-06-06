@@ -2,7 +2,7 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "AceStar Nexus",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.acestar.nexus",
   "build": {
     "frontendDist": "../frontend/dist",
     "devUrl": "http://localhost:5173",
@@ -33,6 +33,12 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "externalBin": [
+        "bin/acestar-backend",
+        "bin/github-provider",
+        "bin/leetcode-provider",
+        "bin/fitness-provider"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

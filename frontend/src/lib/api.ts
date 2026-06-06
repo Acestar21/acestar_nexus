@@ -2,6 +2,18 @@ import type { Internship, Goal, GoalProgress, Reminder, Todo , Focus} from "../t
 
 const BASE_URL = "http://localhost:8000";
 
+export async function waitForBackend(retries = 20, delayMs = 500): Promise<void> {
+	for (let i = 0; i < retries; i++) {
+		try {
+			await fetch('http://localhost:8000/health')
+			return
+		} catch {
+			await new Promise(r => setTimeout(r, delayMs))
+		}
+	}
+}
+
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
     const res = await fetch(`${BASE_URL}${path}`, {
         headers: { "Content-Type": "application/json" },
@@ -9,6 +21,12 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     return res.json();
+}
+
+type NormalizedMetricsResponse = {
+    github: { activity: GithubActivity } | null
+    leetcode: MetricsResponse["leetcode"]
+    fitness: MetricsResponse["fitness"]
 }
 
 type GithubActivity = {
@@ -100,21 +118,35 @@ export const api = {
         })
     },
 
-    getMetrics: async () => {
+    getMetrics: async (): Promise<NormalizedMetricsResponse> => {
         let last: MetricsResponse | null = null
+
         for (let attempt = 0; attempt < METRICS_MAX_ATTEMPTS; attempt += 1) {
             const data = await request<MetricsResponse>('/metrics/')
             last = data
+
             const github = normalizeGithubMetrics(data.github)
+
             if (github || attempt === METRICS_MAX_ATTEMPTS - 1) {
-                return { ...data, github }
+                const normalized: NormalizedMetricsResponse = {
+                    github,
+                    leetcode: data.leetcode,
+                    fitness: data.fitness,
+                }
+
+                return normalized
             }
+
             await sleep(METRICS_RETRY_DELAY_MS)
         }
-        return {
-            ...last,
+
+        const normalized: NormalizedMetricsResponse = {
             github: normalizeGithubMetrics(last?.github ?? null),
-        } as MetricsResponse
+            leetcode: last?.leetcode ?? null,
+            fitness: last?.fitness ?? null,
+        }
+
+        return normalized
     },
 
     health: () => request<{ status: string }>("/health"),

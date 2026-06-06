@@ -17,7 +17,12 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
 	CORSMiddleware,
-	allow_origins=["http://localhost:5173", "tauri://localhost"],
+	allow_origins=[
+        "http://localhost:5173",
+        "tauri://localhost",
+        "https://tauri.localhost",
+        "http://tauri.localhost",
+    ],
 	allow_methods=["*"],
 	allow_headers=["*"],
 )
@@ -32,3 +37,13 @@ app.include_router(metrics.router, prefix="/metrics", tags=["metrics"])
 @app.get("/health")
 def health():
 	return {"status": "ok"}
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        app,
+        host="127.0.0.1",
+        port=8000,
+        reload=False
+    )

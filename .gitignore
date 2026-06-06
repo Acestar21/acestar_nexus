@@ -31,3 +31,9 @@ data/
 
 start.sh
 start.bat
+
+dist/
+build/
+*.spec
+
+bin/

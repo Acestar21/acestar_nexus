@@ -13,6 +13,7 @@ import Fitness from './components/dashboard/Fitness'
 import { useNotifications } from './hooks/useNotifications'
 import './components/layout/layout.css'
 import './App.css'
+import { waitForBackend } from './lib/api'
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
 
 const WIDGET_SIZE = { width: 520, height: 200 }
@@ -24,6 +25,15 @@ export default function App() {
 	const [view, setView] = useState<NavView>('overview')
 	const [selectedId, setSelectedId] = useState<number | null>(null)
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+	const [backendReady, setBackendReady] = useState(false)
+
+
+	useEffect(() => {
+		waitForBackend()
+			.then(() => setBackendReady(true))
+			.catch(() => setBackendReady(true)) // show UI anyway after timeout
+	}, [])
+
 
 	useEffect(() => {
 		async function configureWindow() {
@@ -42,6 +52,25 @@ export default function App() {
 		configureWindow().catch(console.error)
 	}, [expanded])
 
+
+	if (!backendReady) {
+		return (
+			<div style={{
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				height: '100vh',
+				background: '#0f0f0f',
+				color: '#606060',
+				fontSize: '12px',
+				fontFamily: 'system-ui'
+			}}>
+				starting...
+			</div>
+		)
+	}
+
+	
 	if (!expanded) {
 		return (
 			<div className="app-widget">
