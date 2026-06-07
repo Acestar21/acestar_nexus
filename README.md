@@ -193,4 +193,4 @@ No data leaves your machine.
 
 ## License
 
-MIT
+[MIT](LICENSE)
