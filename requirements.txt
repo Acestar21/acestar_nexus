@@ -6,3 +6,4 @@ mcp[cli]
 pydantic-settings
 pydantic
 httpx
+pyinstaller  
